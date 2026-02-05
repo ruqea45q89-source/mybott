@@ -1,33 +1,35 @@
-name: TelegramBot-Live-24/7
+
+  name: TelegramBot-Live-24/7
 
 on:
   workflow_dispatch:
   schedule:
-    # سيحاول التشغيل كل 6 ساعات، لكن تذكر أنه لن يظل يعمل للأبد
     - cron: '0 */6 * * *'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # تغيير النظام من ubuntu إلى windows هو مفتاح الحل لمشروعك
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          # تثبيت أكثر من إصدار لضمان التوافق مع مشروعك
-          dotnet-version: |
-            6.0.x
-            8.0.x
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
 
-      - name: Restore dependencies
-        run: dotnet restore mybottelegrame.csproj
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      - name: Restore NuGet Packages
+        run: nuget restore mybottelegrame.csproj
 
       - name: Build Project
-        run: dotnet build mybottelegrame.csproj --configuration Release
+          # بناء المشروع باستخدام MSBuild المتوافق مع إصدارات ويندوز القديمة
+        run: msbuild mybottelegrame.csproj /p:Configuration=Release
 
       - name: Run Bot
-        # استخدام ملف الـ dll الناتج غالباً ما يكون أكثر استقراراً في Actions
-        run: dotnet run --project mybottelegrame.csproj --no-restore
+        # تشغيل ملف الـ exe الناتج من عملية البناء
+        run: |
+          cd bin/Release
+          start mybottelegrame.exe 
