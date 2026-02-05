@@ -1,5 +1,5 @@
-
-  name: TelegramBot-Live-24/7
+محمد, [2/5/2026 9:32 PM]
+name: TelegramBot-Live-24/7
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    # تغيير النظام من ubuntu إلى windows هو مفتاح الحل لمشروعك
+    # التغيير الأساسي هنا: استخدام ويندوز بدلاً من لينكس
     runs-on: windows-latest
 
     steps:
@@ -25,11 +25,14 @@ jobs:
         run: nuget restore mybottelegrame.csproj
 
       - name: Build Project
-          # بناء المشروع باستخدام MSBuild المتوافق مع إصدارات ويندوز القديمة
         run: msbuild mybottelegrame.csproj /p:Configuration=Release
 
       - name: Run Bot
-        # تشغيل ملف الـ exe الناتج من عملية البناء
+        shell: cmd
         run: |
           cd bin/Release
-          start mybottelegrame.exe 
+          if exist mybottelegrame.exe (
+            start mybottelegrame.exe
+          ) else (
+            dotnet run --project ../../mybottelegrame.csproj
+          )
