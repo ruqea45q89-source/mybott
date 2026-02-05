@@ -1,20 +1,22 @@
 name: TelegramBot-Live-24/7
 
 on:
-  workflow_dispatch: # يتيح لك تشغيله يدوياً
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # سيعيد تشغيل نفسه كل 6 ساعات لضمان الاستمرارية
+    - cron: '0 */6 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x' # تأكد أنها نفس نسخة مشروعك
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Run Bot
-        run: dotnet run
+    - name: Run Bot
+      run: dotnet run --project mybottelegrame.csproj
